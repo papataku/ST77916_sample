@@ -1,6 +1,6 @@
 #define LGFX_USE_V1
 #include <LovyanGFX.hpp>
-#include "LGFX_ESP32_ST77916.hpp"
+#include "LGFX_ESP32_ST77916v2.hpp"
 
 static LGFX_ST77916 lcd;
 static LGFX_Sprite canvas(&lcd);       // オフスクリーン描画用バッファ
@@ -86,15 +86,33 @@ void setup(void)
   lcd.startWrite();
 }
 
+#define DRAW_ALL 0
 
 void draw(float value)
 {
+#if DRAW_ALL
+  static int count = 0;
+  static int exec_count = 0;
+#endif
   base.pushSprite(0, 0);  // 描画用バッファに盤の画像を上書き
 
   float angle = 270 + value * 90.0;
   needle.pushRotateZoom( angle, 3.0, 10.0, transpalette); // 針をバッファに描画する
   canvas.fillCircle(halfwidth, halfwidth, 7, 3);
+
+#if DRAW_ALL
+  if (0 == count) {
+    canvas.pushRotateZoom(0, zoom, zoom);    // 完了した盤をLCDに描画する
+    exec_count ++;
+    printf("exec_count: %d\n", exec_count);
+  } else {
+    canvas.pushRotateZoom(0, zoom, zoom, transpalette);    // 完了した盤をLCDに描画する
+  }
+  count ++;
+  if (count > 100) count = 0;
+#else
   canvas.pushRotateZoom(0, zoom, zoom, transpalette);    // 完了した盤をLCDに描画する
+#endif
   if (value >= 1.5)
   lcd.fillCircle(lcd.width()>>1, (lcd.height()>>1) + width * 4/10, 5, 0x007FFFU);
 }
