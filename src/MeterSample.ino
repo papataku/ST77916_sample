@@ -19,6 +19,25 @@ static float zoom;                      // 表示倍率
 void setup(void)
 {
   lcd.init();
+
+  // draw test pattern
+  lcd.fillScreen(0x0000);
+  delay(200);
+  lcd.fillScreen(0x001F);
+  delay(200);
+  lcd.fillScreen(0x07E0);
+  delay(200);
+  lcd.fillScreen(0xF800);
+  delay(200);
+  lcd.fillScreen(0xFFE0);
+  delay(200);
+  lcd.fillScreen(0xF81F);
+  delay(200);
+  lcd.fillScreen(0xFFFF);
+  delay(200);
+  lcd.fillScreen(0x0000);
+  delay(200);
+
   int lw = std::min(lcd.width(), lcd.height());
 
   zoom = (float)lw / width; // 表示が画面にフィットするよう倍率を調整
